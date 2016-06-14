@@ -33,10 +33,10 @@ int main(int argc, const char * argv[])
         printf("port_scan {要扫描的IP} {开始端口} {结束端口} {线程数}\n");
         return 0;
     }
+	
     printf("-->开始扫描\n");
 	sleep(1);
     
-    //int fd[65535];
     char *ip = argv[1];
     int port_from = atoi(argv[2]);
     int port_to = atoi(argv[3]);
@@ -51,14 +51,24 @@ int main(int argc, const char * argv[])
         mulite_thread_run(ip, port_from, port_to,ts);
     }
 	else{
-        for (int i = port_from; i <= port_to; i++) {
-            printf("开始扫描%d号端口\n",i);
+		
+        for (int i = port_from; i <= port_to; i++)
+		{
+            printf("开始扫描 %d号 端口\n",i);
             int r = -1;
-            if ((r=conn_nonb(ip, i, 100)) == 0) {
+            if ((r = conn_nonb(ip, i, 100)) == 0) {
                 open[count] = i;
                 count++;
             }
         }
+
+		printf("\n扫描结果:\n------------------\n");
+		for(int i = 0 ; i <= count;i++)
+		{
+			printf("端口 %d 开放\n",open[i]);
+		}
+    
+		printf("扫描结束\n------------------\n");
     }
     
     return 0;
@@ -94,11 +104,11 @@ void mulite_thread_run(char *ip,int port_from,int port_to,int thread_count)
             printf("调用pthread_join获取线程1返回值出现错误!\n");
 		}
         else {
-            printf("pthread_join调用成功!线程1退出后带回的值是%d\n",(int)thread_return);
+            //printf("pthread_join调用成功!线程1退出后带回的值是%d\n",(int)thread_return);
 		}
     }
     
-    printf("扫描结果:\n------------------\n");
+    printf("\n扫描结果:\n------------------\n");
     for (int k = 0 ; k < thread_count; k++) {
         int count = res[k][0];
         for(int i = 1 ; i <= count;i++)
@@ -126,7 +136,7 @@ void scan_r(char *ip,int port_from,int port_to,int *result)
 {
     int count = 0;
     for (int i = port_from; i <= port_to; i++) {
-        printf("开始扫描%d号端口\n",i);
+        printf("开始扫描 %d号 端口\n",i);
         
         int r = -1;
         if ((r=conn_nonb(ip, i, 100)) == 0) {
@@ -214,9 +224,10 @@ int conn_nonb(char *ip,int port,int nsec)
                 }
                 if(error==0)
                 {
-                    printf ("-->%d开放\n",port);
+                    printf (">>端口 %d 开放!\n",port);
                     return 0;
                 }
+
 
             }
             close(sockfd);
