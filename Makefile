@@ -2,7 +2,7 @@
 VPATH = src
 
 scanner : main.c
-	gcc src/main.c -o scanner
+	gcc src/main.c -o scan
 
 clean:
-	-rm scanner 
+	-rm scan

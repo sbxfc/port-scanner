@@ -12,7 +12,7 @@
 #include <netdb.h>
 #include <pthread.h>
 
-#define THREAD_COUNT_DEFAULT 10 /*默认使用的线程数量*/
+#define THREAD_COUNT_DEFAULT 2000 /*默认使用的线程数量*/
 #define PORT_NUMBER_MAX 65535   /*最大端口数*/
 
 void mulite_thread_run(const char *dest_ip,int from_port,int end_port,int thread_count);
@@ -24,34 +24,33 @@ int **p_thread_from;
 
 struct thread_operation
 {
-    char *ip;/*目标IP*/
-    int thread_idx;/*线程索引*/
-    int from;/*开始端口*/
-    int to;/*结束端口*/
+  char *ip;/*目标IP*/
+  int thread_idx;/*线程索引*/
+  int from;/*开始端口*/
+  int to;/*结束端口*/
 };
 
 int main(int argc, const char * argv[])
 {
-    if (argc < 4) {
-        printf("./scanner <目标IP地址> <开始端口> <结束端口> <使用线程数量>\n");
-        return 0;
-    }
-
-    printf("扫描开始...\n");
-	  sleep(1);
-
-    const char *dest_ip = argv[1];  /*目标IP地址*/
-    int from_port = atoi(argv[2]);/*开始端口*/
-    int end_port = atoi(argv[3]);/*结束端口*/
-    int thread_count = THREAD_COUNT_DEFAULT;
-    int open[PORT_NUMBER_MAX];
-    if(argc == 5){/*设置线程数*/
-        thread_count = atoi(argv[4]);
-    }
-    p_thread_from = (int **)malloc(sizeof(int*)*thread_count);
-    mulite_thread_run(dest_ip, from_port, end_port,thread_count);
-
+  if (argc < 2) {
+    printf("./scanner <目标IP地址>\n");
     return 0;
+  }
+
+  printf("扫描开始...\n");
+
+  const char *dest_ip = argv[1];  /*目标IP地址*/
+  int from_port = 0;//atoi(argv[2]);/*开始端口*/
+  int end_port = PORT_NUMBER_MAX;//atoi(argv[3]);/*结束端口*/
+  int thread_count = THREAD_COUNT_DEFAULT;
+  int open[PORT_NUMBER_MAX];
+  if(argc == 5){/*设置线程数*/
+      thread_count = atoi(argv[4]);
+  }
+  p_thread_from = (int **)malloc(sizeof(int*)*thread_count);
+  mulite_thread_run(dest_ip, from_port, end_port,thread_count);
+
+  return 0;
 }
 
 /**
@@ -116,18 +115,16 @@ void do_operate_task(void *arg)
 /*扫描端口*/
 void scan_port(char *ip,int from_port,int end_port,int *result)
 {
-    int count = 0;
-    for (int i = from_port; i <= end_port; i++) {
-        printf("开始扫描 %d号 端口\n",i);
-
-        int r = -1;
-        if ((r=asyn_conn(ip, i)) == 0) {
-            count++;
-            result[count]= i;
-        }
-
+  int count = 0;
+  for (int i = from_port; i <= end_port; i++) {
+    printf("开始扫描 %d号 端口\n",i);
+    int r = -1;
+    if ((r=asyn_conn(ip, i)) == 0) {
+        count++;
+        result[count]= i;
     }
-    result[0] = count;
+  }
+  result[0] = count;
 }
 
 /**
