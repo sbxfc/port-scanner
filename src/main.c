@@ -38,14 +38,24 @@ int main(int argc, const char * argv[]){
     return 0;
   }
 
-  printf("Start scanning after a second!\n");
-  sleep(1);
+
 
   //Destination adress.
   const char *dest_address = argv[1];
 
-  int start_port = 0;             //atoi(argv[2]);
-  int end_port = SYSTEM_PORT_MAX; //atoi(argv[3]);
+  int start_port = 0;
+  int end_port = SYSTEM_PORT_MAX;
+  if(argc >= 3){
+      start_port = atoi(argv[2]);
+  }
+
+  if(argc >= 4){
+      end_port = atoi(argv[3]);
+  }
+
+  printf("Start scanning after a second! [%d -> %d]\n",start_port,end_port);
+  sleep(1);
+
   int thread_count = NUMBER_OF_THREADS_USED;
   int port_open[SYSTEM_PORT_MAX];
 
