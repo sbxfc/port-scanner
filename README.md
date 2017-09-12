@@ -1,5 +1,6 @@
 
+Port scanner.
 
-  $ cd /port_scanner
-	$ make
-	$./scan <destination_address>
+    $ cd /port_scanner
+    $ make
+    $ ./scan <destination_address>
