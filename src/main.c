@@ -45,6 +45,7 @@ int main(int argc, const char * argv[]){
 
   int start_port = 0;
   int end_port = SYSTEM_PORT_MAX;
+  int thread_count = NUMBER_OF_THREADS_USED;
   if(argc >= 3){
       start_port = atoi(argv[2]);
   }
@@ -53,10 +54,14 @@ int main(int argc, const char * argv[]){
       end_port = atoi(argv[3]);
   }
 
+  if(argc >= 5){
+      thread_count = atoi(argv[4]);
+  }
+
   printf("Start scanning after a second! [%d -> %d]\n",start_port,end_port);
   sleep(1);
 
-  int thread_count = NUMBER_OF_THREADS_USED;
+
   int port_open[SYSTEM_PORT_MAX];
 
   p_thread = (int **)malloc(sizeof(int*)*thread_count);
